@@ -1,11 +1,11 @@
 pipeline {
   agent any
-   environment { 
+  environment {
         docker_username = 'horib'
-    }
+  }
   stages {
-    stage('clone down'){
-      steps{
+    stage('clone down') {
+      steps {
         stash excludes: '.git', name: 'code'
       }
     }
@@ -18,13 +18,12 @@ pipeline {
         }
 
         stage('build app') {
-          options { 
+          options {
             skipDefaultCheckout(true) }
           agent {
             docker {
               image 'gradle:jdk11'
             }
-
           }
           steps {
             unstash 'code'
@@ -36,13 +35,12 @@ pipeline {
           }
         }
         stage('test app') {
-          options { 
+          options {
             skipDefaultCheckout(true) }
           agent {
             docker {
               image 'gradle:jdk11'
             }
-
           }
           steps {
             unstash 'code'
@@ -50,20 +48,18 @@ pipeline {
             junit 'app/build/test-results/test/TEST-*.xml'
           }
         }
-
       }
-      stage('push docker app'){
+    }
+      stage('push docker app') {
         environment {
           DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
-        }     
+        }
       steps {
           unstash 'code' //unstash the repository code
           sh 'ci/build-docker.sh'
           sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin' //login to docker hub with the credentials above
           sh 'ci/push-docker.sh'
-        }
       }
     }
-
   }
 }
