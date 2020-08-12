@@ -54,6 +54,13 @@ pipeline {
       environment {
           DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
         }
+        options {
+            skipDefaultCheckout(true) }
+          agent {
+            docker {
+              image 'gradle:jdk11'
+            }
+          }
       steps {
           unstash 'code' //unstash the repository code
           sh 'ci/build-docker.sh'
