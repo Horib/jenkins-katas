@@ -21,7 +21,7 @@ pipeline {
             archiveArtifacts 'app/build/libs/'
             sh 'ls'
             deleteDir()
-            sh 'ls'
+            sh 'ls -lah'
           }
         }
 
