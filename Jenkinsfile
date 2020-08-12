@@ -52,6 +52,10 @@ pipeline {
       }
     }
     stage('push docker app') {
+      when {
+        beforeAgent true
+        branch 'master'
+      }
       environment {
           DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
         }
