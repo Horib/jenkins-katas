@@ -69,5 +69,28 @@ pipeline {
           sh 'ci/push-docker.sh'
       }
     }
+    stage('component test'){
+      when {
+        anyOf{
+          beforeAgent true
+          branch 'master'
+          changeset 'master'
+        }
+      }
+      options{
+        skipDefaultCheckout(true)
+      }
+      steps{
+        unstash 'code'
+        sh 'ci/component-test.sh'
+      }
+    }
   }
+}
+void pushIfMaster() {
+    if (BRANCH_NAME=="master"){
+      sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
+      sh 'ci/push-docker.sh'
+    }
+
 }
