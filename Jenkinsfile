@@ -32,7 +32,7 @@ pipeline {
             stash excludes: '.git', name: 'code'
             sh 'ls -lah'
             deleteDir()
-            sh 'ls -lah'
+            sh 'ls '
           }
         }
         stage('test app') {
